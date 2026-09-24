@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yab Financial - Home</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; margin: 0; padding: 0; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #f1f5f9 !important;
+            color: #1e293b !important;
+            min-height: 100vh;
+            padding-bottom: 75px;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+        .glass-header { background: rgba(241, 245, 249, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .stat-card { border-radius: 1rem; cursor: pointer; color: #ffffff !important; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 15px; transition: all 0.2s ease; }
+        .stat-card:active { transform: scale(0.98); }
+        .stat-card.income-card { background: #10b981 !important; } 
+        .stat-card.expense-card { background: #ef4444 !important; } 
+        .stat-card.savings-card { background: #3b82f6 !important; } 
+        .stat-card.balance-card { background: #f59e0b !important; }
+        
+        .month-card { 
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff; padding: 20px; border-radius: 1rem; margin-bottom: 16px; 
+            box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
+            text-align: center;
+        }
+        .today-label { color: #94a3b8; font-size: 13px; margin-bottom: 4px; }
+        .ethiopian-date { font-size: 24px; font-weight: bold; color: #34d399; margin: 6px 0; }
+        .gregorian-date { color: #94a3b8; font-size: 14px; }
+
+        .chart-box { 
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%) !important;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            color: #1e293b; padding: 18px; border-radius: 1rem; display: flex; 
+            align-items: center; justify-content: space-between; 
+            box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08); 
+        }
+        .navbar { 
+            position: fixed; bottom: 0; left: 0; right: 0; 
+            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px); display: flex; justify-content: space-around; 
+            padding: 10px 0; border-top: 1px solid rgba(226, 232, 240, 0.8); 
+            z-index: 1000; max-width: 42rem; margin: 0 auto; 
+        }
+        .nav-item { text-align: center; color: #64748b; font-size: 11px; font-weight: 600; cursor: pointer; background: none; border: none; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: color 0.2s; }
+        .nav-item.active { color: #10b981; }
+        .nav-item div { font-size: 18px; }
+        
+        .lang-btn { background: #e2e8f0; color: #1e293b; border: none; padding: 5px 12px; border-radius: 0.5rem; font-weight: bold; font-size: 12px; cursor: pointer; }
+    </style>
+</head>
+<body class="min-h-screen pb-20">
+
+    <header class="glass-header border-b border-slate-200 sticky top-0 z-50 px-4 py-3">
+        <div class="max-w-2xl mx-auto flex justify-between items-center">
+            <!-- ግራ እና ቀኝ የነበሩት ሜኑዎች ጠፍተዋል -->
+            <div></div>
+            <h1 class="text-base font-extrabold text-slate-800 tracking-wide" data-en="Yab Financial" data-am="ያብ ፋይናንስ">Yab Financial</h1>
+            <!-- የቋንቋ መቀያየሪያ በቀኝ ጠግ -->
+            <button class="lang-btn" id="langToggleBtn" onclick="toggleLanguage()">EN</button>
+        </div>
+    </header>
+
+    <main id="main-content" class="max-w-2xl mx-auto p-4 space-y-4">
+        <div class="month-card">
+            <div class="today-label" data-en="Today" data-am="ዛሬ">Today</div>
+            <div class="ethiopian-date" id="todayEthiopian">...</div>
+            <div class="gregorian-date" id="todayGregorian">...</div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+            <div class="stat-card income-card" onclick="navigatePage('list.html?filter=income')">
+                <div class="flex items-center gap-2 text-xs text-white/90 mb-2 font-semibold"><span>📥</span> <span data-en="Income" data-am="ገቢ">Income</span></div>
+                <div class="text-xl font-extrabold text-white" id="home-income">0 ብር</div>
+            </div>
+            <div class="stat-card expense-card" onclick="navigatePage('list.html?filter=expense')">
+                <div class="flex items-center gap-2 text-xs text-white/90 mb-2 font-semibold"><span>📤</span> <span data-en="Expense" data-am="ወጪ">Expense</span></div>
+                <div class="text-xl font-extrabold text-white" id="home-expense">0 ብር</div>
+            </div>
+            <div class="stat-card savings-card" onclick="navigatePage('list.html?filter=savings')">
+                <div class="flex items-center gap-2 text-xs text-white/90 mb-2 font-semibold"><span>🏦</span> <span data-en="Savings" data-am="ቁጠባ">Savings</span></div>
+                <div class="text-xl font-extrabold text-white" id="home-savings">0 ብር</div>
+            </div>
+            <div class="stat-card balance-card" onclick="navigatePage('list.html')">
+                <div class="flex items-center gap-2 text-xs text-white/90 mb-2 font-semibold"><span>💼</span> <span data-en="Balance" data-am="ቀሪ ገንዘብ">Balance</span></div>
+                <div class="text-xl font-extrabold text-white" id="home-balance">0 ብር</div>
+            </div>
+        </div>
+
+        <div class="text-sm font-bold text-slate-700 mt-4 mb-2" data-en="Monthly Overview" data-am="የወር አጠቃላይ ሁኔታ">Monthly Overview</div>
+        <div class="chart-box">
+            <div class="relative w-[9.6rem] h-[9.6rem] flex items-center justify-center">
+                <div id="chart-circle" class="w-full h-full rounded-full bg-[conic-gradient(#10b981_0%_25%,#ef4444_25%_50%,#3b82f6_50%_75%,#f59e0b_75%_100%)] flex items-center justify-center shadow-inner">
+                    <div id="chart-center-text" class="w-[5.4rem] h-[5.4rem] bg-white rounded-full flex items-center justify-center font-extrabold text-base text-emerald-600 shadow-sm">100%</div>
+                </div>
+            </div>
+            <div class="flex flex-col gap-2 text-xs font-bold text-slate-800 pr-1">
+                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-emerald-500 shadow-sm"></span> <span data-en="Income" data-am="ገቢ">Income</span> <strong id="summary-income" class="ml-auto text-emerald-600 text-sm">0%</strong></div>
+                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-rose-500 shadow-sm"></span> <span data-en="Expense" data-am="ወጪ">Expense</span> <strong id="summary-expense" class="ml-auto text-rose-600 text-sm">0%</strong></div>
+                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500 shadow-sm"></span> <span data-en="Savings" data-am="ቁጠባ">Savings</span> <strong id="summary-savings" class="ml-auto text-blue-600 text-sm">0%</strong></div>
+                <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-amber-500 shadow-sm"></span> <span data-en="Balance" data-am="ቀሪ">Balance</span> <strong id="summary-balance" class="ml-auto text-amber-600 text-sm">0%</strong></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- የታችኛው ፉተር በአይን ጥቅሻ (SPA) እንዲጫን ተደርጓል -->
+    <nav class="navbar">
+        <a onclick="navigatePage('home.html')" class="nav-item active"><div><i class="fa-solid fa-house"></i></div>home</a>
+        <a onclick="navigatePage('add.html')" class="nav-item"><div><i class="fa-solid fa-file-arrow-up"></i></div>add</a>
+        <a onclick="navigatePage('list.html')" class="nav-item"><div><i class="fa-solid fa-file-lines"></i></div>list</a>
+        <a onclick="navigatePage('goals.html')" class="nav-item"><div><i class="fa-solid fa-briefcase"></i></div>goals</a>
+        <a onclick="navigatePage('reports.html')" class="nav-item"><div><i class="fa-solid fa-chart-pie"></i></div>reports</a>
+        <a onclick="navigatePage('settings.html')" class="nav-item"><div><i class="fa-solid fa-gear"></i></div>settings</a>
+    </nav>
+
+<script>
+    // ቋንቋ ማስተካከያ (Default: EN)
+    let currentLang = localStorage.getItem('app_lang') || 'EN';
+
+    function toggleLanguage() {
+        currentLang = currentLang === 'EN' ? 'AM' : 'EN';
+        localStorage.setItem('app_lang', currentLang);
+        applyLanguage();
+    }
+
+    function applyLanguage() {
+        document.getElementById('langToggleBtn').innerText = currentLang;
+        document.querySelectorAll('[data-en]').forEach(el => {
+            el.innerText = el.getAttribute(`data-${currentLang.toLowerCase()}`);
+        });
+    }
+
+    // በአይን ጥቅሻ (ያለ ሪፍሬሽ) ገጾችን የሚቀይር ፈጣን ፍተሻ (SPA loader)
+    async function navigatePage(url) {
+        try {
+            let response = await fetch(url);
+            let htmlText = await response.text();
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(htmlText, 'text/html');
+            
+            // የዋናውን አካል (main እና ርዕስ) ይዘት ብቻ በመቀየር ፍጥንቱን በአይን ጥቅሻ ማድረግ
+            document.querySelector('main').innerHTML = doc.querySelector('main').innerHTML;
+            document.title = doc.title;
+            history.pushState({}, '', url);
+
+            // አዳዲስ ገጾች ሲጫኑ ስክሪፕቶቻቸው እንዲሰሩ ዳግም ማስጀመር
+            if(url.includes('home.html') || url === '') {
+                showToday();
+                loadHomeData();
+            }
+            applyLanguage();
+        } catch (e) {
+            location.href = url; // ድንገት ችግር ካለ በቀጥታ ይጫናል
+        }
+    }
+
+    const ethiopianMonths = {
+        "1": "መስከረም", "2": "ጥቅምት", "3": "ኅዳር", "4": "ታኅሣሥ",
+        "5": "ጥር", "6": "የካቲት", "7": "መጋቢት", "8": "ሚያዝያ",
+        "9": "ግንቦት", "10": "ሰኔ", "11": "ሐምሌ", "12": "ነሐሴ", "13": "ጳጉሜን"
+    };
+
+    function gregorianToEthiopian(date) {
+        const formatter = new Intl.DateTimeFormat("en-u-ca-ethiopic", { year: "numeric", month: "numeric", day: "numeric", timeZone: "UTC" });
+        const parts = formatter.formatToParts(date);
+        let year, month, day;
+        parts.forEach(part => {
+            if (part.type === "year") year = parseInt(part.value);
+            if (part.type === "month") month = parseInt(part.value);
+            if (part.type === "day") day = parseInt(part.value);
+        });
+        return { year, month, day, monthName: ethiopianMonths[month] || "መስከረም" };
+    }
+
+    function showToday() {
+        const now = new Date();
+        const ethiopian = gregorianToEthiopian(now);
+        let dateEl = document.getElementById("todayEthiopian");
+        let gregEl = document.getElementById("todayGregorian");
+        if(dateEl) dateEl.textContent = `${ethiopian.day} ${ethiopian.monthName} ${ethiopian.year}`;
+        if(gregEl) gregEl.textContent = now.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+    }
+
+    function loadHomeData() {
+        let transactions = JSON.parse(localStorage.getItem('my_finance_data')) || [];
+        let income = 0, expense = 0, savings = 0;
+
+        transactions.forEach(t => {
+            if(t.type === 'income') income += t.amount;
+            if(t.type === 'expense') expense += t.amount;
+            if(t.type === 'savings') savings += t.amount;
+        });
+
+        let balance = income - (expense + savings);
+
+        let incEl = document.getElementById('home-income');
+        let expEl = document.getElementById('home-expense');
+        let savEl = document.getElementById('home-savings');
+        let balEl = document.getElementById('home-balance');
+
+        if(incEl) incEl.innerText = income.toLocaleString() + ' ብር';
+        if(expEl) expEl.innerText = expense.toLocaleString() + ' ብር';
+        if(savEl) savEl.innerText = savings.toLocaleString() + ' ብር';
+        if(balEl) balEl.innerText = balance.toLocaleString() + ' ብር';
+
+        let total = income + expense + savings + Math.abs(balance);
+        if (total === 0) total = 1;
+
+        let incP = (income / total) * 100;
+        let expP = (expense / total) * 100;
+        let savP = (savings / total) * 100;
+        let balP = (Math.abs(balance) / total) * 100;
+
+        let chartEl = document.getElementById('chart-circle');
+        if(chartEl) {
+            let cumIncP = incP;
+            let cumExpP = cumIncP + expP;
+            let cumSavP = cumExpP + savP;
+            chartEl.style.background = `conic-gradient(#10b981 0% ${cumIncP}%, #ef4444 ${cumIncP}% ${cumExpP}%, #3b82f6 ${cumExpP}% ${cumSavP}%, #f59e0b ${cumSavP}% 100%)`;
+        }
+
+        if(document.getElementById('summary-income')) {
+            document.getElementById('summary-income').innerText = Math.round(incP) + '%';
+            document.getElementById('summary-expense').innerText = Math.round(expP) + '%';
+            document.getElementById('summary-savings').innerText = Math.round(savP) + '%';
+            document.getElementById('summary-balance').innerText = Math.round(balP) + '%';
+        }
+    }
+
+    showToday();
+    loadHomeData();
+    applyLanguage();
+</script>
+</body>
+</html>
