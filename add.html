@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yab Financial - Add Transaction</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; margin: 0; padding: 0; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f1f5f9 !important; color: #1e293b !important; min-height: 100vh; padding-bottom: 75px; animation: fadeIn 0.2s ease-in-out; }
+        .glass-header { background: rgba(241, 245, 249, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .unified-panel { background: #ffffff; border: 1px solid rgba(203, 213, 225, 0.6); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05); border-radius: 1rem; padding: 20px; }
+        .type-tab { flex: 1; padding: 12px; text-align: center; background: #e2e8f0; border-radius: 0.75rem; cursor: pointer; font-weight: bold; font-size: 13px; color: #64748b; transition: all 0.2s; }
+        .type-tab.active.inc { background: #10b981 !important; color: #fff !important; }
+        .type-tab.active.exp { background: #ef4444 !important; color: #fff !important; }
+        .type-tab.active.sav { background: #3b82f6 !important; color: #fff !important; }
+        .form-input { width: 100%; padding: 12px; background: #f8fafc; border: 1px solid #cbd5e1; color: #1e293b; border-radius: 0.75rem; font-size: 15px; outline: none; }
+        .form-input:focus { border-color: #10b981; }
+        .btn-primary { background: #10b981; color: #fff; border: none; width: 100%; padding: 14px; border-radius: 0.75rem; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .btn-primary:active { transform: scale(0.98); }
+        .navbar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid rgba(226, 232, 240, 0.8); z-index: 1000; max-width: 42rem; margin: 0 auto; }
+        .nav-item { text-align: center; color: #64748b; font-size: 11px; font-weight: 600; cursor: pointer; background: none; border: none; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .nav-item.active { color: #10b981; }
+        .nav-item div { font-size: 18px; }
+
+        /* የማስጠንቀቂያ ፕላፕ (Modal) ዲዛይን */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-box { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); width: 90%; max-width: 340px; border-radius: 1.25rem; padding: 24px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); color: #fff; }
+    </style>
+</head>
+<body class="min-h-screen pb-20">
+
+    <header class="glass-header border-b border-slate-200 sticky top-0 z-50 px-4 py-3">
+        <div class="max-w-2xl mx-auto flex justify-between items-center">
+            <div></div>
+            <h1 class="text-base font-extrabold text-slate-800 tracking-wide" data-en="Yab Financial" data-am="Yab Financial">Yab Financial</h1>
+            <div></div>
+        </div>
+    </header>
+
+    <main id="main-content" class="max-w-2xl mx-auto p-4 space-y-4">
+        <div class="unified-panel">
+            <h3 class="text-sm font-bold text-slate-700 mb-4" data-en="➕ Add Transaction" data-am="➕ ግብይት / ወጪ መዝግብ">➕ Add Transaction</h3>
+            
+            <div class="flex gap-2 mb-4">
+                <div class="type-tab active inc" id="tab-inc" onclick="setTxType('income')" data-en="Income" data-am="ገቢ">Income</div>
+                <div class="type-tab" id="tab-exp" onclick="setTxType('expense')" data-en="Expense" data-am="ወጪ">Expense</div>
+                <div class="type-tab" id="tab-sav" onclick="setTxType('savings')" data-en="Savings" data-am="ቁጠባ">Savings</div>
+            </div>
+
+            <form id="txForm" onsubmit="confirmSave(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" data-en="Date" data-am="ቀን">Date</label>
+                    <input type="text" id="txDate" class="form-input" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" data-en="Amount (ETB)" data-am="መጠን (ብር)">Amount (ETB)</label>
+                    <input type="number" id="txAmount" class="form-input" placeholder="1500" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" data-en="Category" data-am="ምድብ">Category</label>
+                    <div id="categoryContainer">
+                        <input type="text" id="txCategory" class="form-input" placeholder="Category (e.g., Food, Transport...)" required>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-slate-500 mb-1" data-en="Description (Optional)" data-am="ማስታወሻ (አማራጭ)">Description (Optional)</label>
+                    <input type="text" id="txDesc" class="form-input" placeholder="Note...">
+                </div>
+                <button type="submit" class="btn-primary" id="submitBtn" data-en="Save" data-am="አስቀምጥ">Save</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- የማስጠንቀቂያ/ማረጋገጫ ፕላፕ (Modal) -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-box space-y-4">
+            <div class="w-12 h-12 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <h3 class="text-base font-bold text-white mb-1" data-en="Save Transaction" data-am="ግብይት አስቀምጥ">Save Transaction</h3>
+                <p class="text-xs text-slate-300" id="modalMessage">መዝገቡን ማስቀመጥ ይፈልጋሉ?</p>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeModal()" class="flex-1 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold transition" data-en="Cancel" data-am="ሰርዝ">Cancel</button>
+                <button onclick="saveTransaction()" class="flex-1 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-xs font-bold transition" data-en="Yes" data-am="አዎ">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- የታችኛው ፉተር በአይን ጥቅሻ (SPA) እንዲጫን ተደርጓል -->
+    <nav class="navbar">
+        <a onclick="navigatePage('home.html')" class="nav-item"><div><i class="fa-solid fa-house"></i></div>home</a>
+        <a onclick="navigatePage('add.html')" class="nav-item active"><div><i class="fa-solid fa-file-arrow-up"></i></div>add</a>
+        <a onclick="navigatePage('list.html')" class="nav-item"><div><i class="fa-solid fa-file-lines"></i></div>list</a>
+        <a onclick="navigatePage('goals.html')" class="nav-item"><div><i class="fa-solid fa-briefcase"></i></div>goals</a>
+        <a onclick="navigatePage('reports.html')" class="nav-item"><div><i class="fa-solid fa-chart-pie"></i></div>reports</a>
+        <a onclick="navigatePage('settings.html')" class="nav-item"><div><i class="fa-solid fa-gear"></i></div>settings</a>
+    </nav>
+
+<script>
+    let currentLang = localStorage.getItem('app_lang') || 'EN';
+
+    function applyLanguage() {
+        document.querySelectorAll('[data-en]').forEach(el => {
+            el.innerText = el.getAttribute(`data-${currentLang.toLowerCase()}`);
+        });
+    }
+
+    async function navigatePage(url) {
+        try {
+            let response = await fetch(url);
+            let htmlText = await response.text();
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(htmlText, 'text/html');
+            
+            document.querySelector('main').innerHTML = doc.querySelector('main').innerHTML;
+            document.title = doc.title;
+            history.pushState({}, '', url);
+
+            if(url.includes('add.html')) {
+                loadTodayDate();
+                setTxType('income');
+            }
+            applyLanguage();
+        } catch (e) {
+            location.href = url;
+        }
+    }
+
+    const ethiopianMonths = {
+        "1": "መስከረም", "2": "ጥቅምት", "3": "ኅዳር", "4": "ታኅሣሥ",
+        "5": "ጥር", "6": "የካቲት", "7": "መጋቢት", "8": "ሚያዝያ",
+        "9": "ግንቦት", "10": "ሰኔ", "11": "ሐምሌ", "12": "ነሐሴ", "13": "ጳጉሜን"
+    };
+
+    function gregorianToEthiopian(date) {
+        const formatter = new Intl.DateTimeFormat("en-u-ca-ethiopic", {
+            year: "numeric", month: "numeric", day: "numeric", timeZone: "UTC"
+        });
+        const parts = formatter.formatToParts(date);
+        let year, month, day;
+        parts.forEach(part => {
+            if (part.type === "year") year = parseInt(part.value);
+            if (part.type === "month") month = parseInt(part.value);
+            if (part.type === "day") day = parseInt(part.value);
+        });
+        return { year, month, day, monthName: ethiopianMonths[month] || "መስከረም" };
+    }
+
+    function loadTodayDate() {
+        const now = new Date();
+        const ethiopian = gregorianToEthiopian(now);
+        let dateEl = document.getElementById('txDate');
+        if(dateEl) dateEl.value = `${ethiopian.monthName} ${ethiopian.day}, ${ethiopian.year}`;
+    }
+    loadTodayDate();
+
+    let currentTxType = 'income';
+    function setTxType(type) {
+        currentTxType = type;
+        document.querySelectorAll('.type-tab').forEach(t => t.classList.remove('active', 'inc', 'exp', 'sav'));
+        let btnPrimary = document.getElementById('submitBtn');
+        let categoryContainer = document.getElementById('categoryContainer');
+        
+        if(type === 'income') {
+            document.getElementById('tab-inc').classList.add('active', 'inc');
+            if(btnPrimary) btnPrimary.style.background = '#10b981';
+            if(categoryContainer) categoryContainer.innerHTML = `<input type="text" id="txCategory" class="form-input" placeholder="${currentLang === 'EN' ? 'Category (e.g., Salary, Sales...)' : 'ምድብ ጻፍ (ለምሳሌ: ደመወዝ, ሽያጭ...)'}" required>`;
+        } else if(type === 'expense') {
+            document.getElementById('tab-exp').classList.add('active', 'exp');
+            if(btnPrimary) btnPrimary.style.background = '#ef4444';
+            if(categoryContainer) categoryContainer.innerHTML = `<input type="text" id="txCategory" class="form-input" placeholder="${currentLang === 'EN' ? 'Category (e.g., Food, Transport...)' : 'ምድብ ጻፍ (ለምሳሌ: ምግብ, ትራንስፖርት...)'}" required>`;
+        } else if(type === 'savings') {
+            document.getElementById('tab-sav').classList.add('active', 'sav');
+            if(btnPrimary) btnPrimary.style.background = '#3b82f6';
+            if(categoryContainer) categoryContainer.innerHTML = `
+                <select id="txCategory" class="form-input" required>
+                    <option value="ስልክ መግዣ">ስልክ መግዣ</option>
+                    <option value="PC መግዣ">PC መግዣ</option>
+                    <option value="ተጨማሪ">ተጨማሪ</option>
+                </select>
+            `;
+        }
+    }
+
+    function confirmSave(e) {
+        e.preventDefault();
+        let amount = document.getElementById('txAmount').value;
+        let msg = currentLang === 'EN' ? `Save entered amount (${amount} ETB)?` : `ያስገቡትን መጠን (${amount} ብር) ማስቀመጥ ይፈልጋሉ?`;
+        document.getElementById('modalMessage').innerText = msg;
+        document.getElementById('confirmModal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('confirmModal').classList.remove('show');
+    }
+
+    function saveTransaction() {
+        let transactions = JSON.parse(localStorage.getItem('my_finance_data')) || [];
+        const newTx = {
+            id: Date.now(),
+            type: currentTxType,
+            date: document.getElementById('txDate').value,
+            amount: parseFloat(document.getElementById('txAmount').value),
+            category: document.getElementById('txCategory').value.trim(),
+            desc: document.getElementById('txDesc').value || '-'
+        };
+        transactions.unshift(newTx);
+        localStorage.setItem('my_finance_data', JSON.stringify(transactions));
+        closeModal();
+        navigatePage('list.html');
+    }
+
+    applyLanguage();
+</script>
+</body>
+</html>
