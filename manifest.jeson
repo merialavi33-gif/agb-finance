@@ -1,0 +1,15 @@
+{
+  "name": "AGB Financial",
+  "short_name": "AGB Finance",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#881337",
+  "theme_color": "#be123c",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
