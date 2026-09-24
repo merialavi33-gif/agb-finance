@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AGB Financial - Welcome</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; margin: 0; padding: 0; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif;
+            /* ሮዝ ባክግራውንድ ከእውነተኛ ዶላር ምስል ጋር የተዋሃደ */
+            background: linear-gradient(rgba(190, 24, 93, 0.65), rgba(136, 19, 55, 0.85)), url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000&auto=format&fit=crop') no-repeat center center fixed;
+            background-size: cover;
+            color: #ffffff !important;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 20px;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .welcome-container {
+            width: 100%;
+            max-width: 28rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin: auto;
+        }
+        .wallet-box {
+            background: rgba(136, 19, 55, 0.85);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            border-radius: 1.5rem;
+            padding: 24px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        .btn-enter {
+            background: #10b981;
+            color: white;
+            font-weight: bold;
+            width: 100%;
+            padding: 14px;
+            border-radius: 9999px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+        }
+        .btn-enter:active {
+            transform: scale(0.97);
+        }
+    </style>
+</head>
+<body>
+
+    <div></div>
+
+    <div class="welcome-container">
+        <!-- የኪስ ቦርሳ እና የዶላር ምልክት አዶ -->
+        <div class="wallet-box">
+            <i class="fa-solid fa-wallet text-amber-400 text-5xl"></i>
+        </div>
+
+        <h1 class="text-3xl font-extrabold tracking-wide mb-1" data-en="AGB Financial" data-am="AGB ፋይናንስ">AGB ፋይናንስ</h1>
+        <p class="text-sm text-pink-200 mb-8 font-medium" data-en="My Finance" data-am="ማይ ፋይናንስ">My Finance</p>
+
+        <!-- "ግባ" የሚለው ብቸኛ በተን -->
+        <div class="w-full">
+            <a href="home.html" class="btn-enter" data-en="Enter" data-am="ግባ">ግባ</a>
+        </div>
+    </div>
+
+    <div class="text-xs text-pink-200 opacity-80 font-medium">
+        &copy; 2026 AGB Financial. All rights reserved.
+    </div>
+
+</body>
+</html>
