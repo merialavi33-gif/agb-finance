@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Yab Financial - Transaction List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; margin: 0; padding: 0; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f1f5f9 !important; color: #1e293b !important; min-height: 100vh; padding-bottom: 75px; animation: fadeIn 0.2s ease-in-out; }
+        .glass-header { background: rgba(241, 245, 249, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+        .list-item { background: #ffffff; border: 1px solid rgba(203, 213, 225, 0.6); box-shadow: 0 4px 12px rgba(0,0,0,0.03); padding: 14px 16px; border-radius: 1rem; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .income-text { color: #10b981; }
+        .expense-text { color: #ef4444; }
+        .savings-text { color: #3b82f6; }
+        .form-input { width: 100%; padding: 12px; background: #ffffff; border: 1px solid #cbd5e1; color: #1e293b; border-radius: 0.75rem; margin-bottom: 15px; outline: none; }
+        .form-input:focus { border-color: #10b981; }
+        .navbar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid rgba(226, 232, 240, 0.8); z-index: 1000; max-width: 42rem; margin: 0 auto; }
+        .nav-item { text-align: center; color: #64748b; font-size: 11px; font-weight: 600; cursor: pointer; background: none; border: none; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .nav-item.active { color: #10b981; }
+        .nav-item div { font-size: 18px; }
+
+        /* የማስጠንቀቂያ ፕላፕ (Modal) ዲዛይን */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.2s ease; }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-box { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); width: 90%; max-width: 340px; border-radius: 1.25rem; padding: 24px; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); color: #fff; }
+    </style>
+</head>
+<body class="min-h-screen pb-20">
+
+    <header class="glass-header border-b border-slate-200 sticky top-0 z-50 px-4 py-3">
+        <div class="max-w-2xl mx-auto flex justify-between items-center">
+            <div></div>
+            <h1 class="text-base font-extrabold text-slate-800 tracking-wide" data-en="Yab Financial" data-am="Yab Financial">Yab Financial</h1>
+            <div></div>
+        </div>
+    </header>
+
+    <main id="main-content" class="max-w-2xl mx-auto p-4 space-y-4">
+        <div class="flex justify-between items-center mb-1">
+            <h3 class="text-sm font-bold text-slate-700" data-en="📄 Transaction List" data-am="📄 የግብይቶች ዝርዝር">📄 Transaction List</h3>
+        </div>
+        <input type="text" id="searchInput" class="form-input" placeholder="Search by category, note or month..." onkeyup="renderList()">
+        <div id="transactionListContainer"></div>
+    </main>
+
+    <!-- የማስጠንቀቂያ/ማረጋገጫ ፕላፕ (Modal) -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-box space-y-4">
+            <div class="w-12 h-12 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <h3 class="text-base font-bold text-white mb-1" data-en="Delete Transaction" data-am="መረጃ ሰርዝ">Delete Transaction</h3>
+                <p class="text-xs text-slate-300" id="modalMessage">ይህንን መረጃ መሰረዝ ይፈልጋሉ?</p>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button onclick="closeModal()" class="flex-1 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-bold transition" data-en="Cancel" data-am="ሰርዝ">Cancel</button>
+                <button onclick="executeDelete()" class="flex-1 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl text-xs font-bold transition" data-en="Yes" data-am="አዎ">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="navbar">
+        <a onclick="navigatePage('home.html')" class="nav-item"><div><i class="fa-solid fa-house"></i></div>home</a>
+        <a onclick="navigatePage('add.html')" class="nav-item"><div><i class="fa-solid fa-file-arrow-up"></i></div>add</a>
+        <a onclick="navigatePage('list.html')" class="nav-item active"><div><i class="fa-solid fa-file-lines"></i></div>list</a>
+        <a onclick="navigatePage('goals.html')" class="nav-item"><div><i class="fa-solid fa-briefcase"></i></div>goals</a>
+        <a onclick="navigatePage('reports.html')" class="nav-item"><div><i class="fa-solid fa-chart-pie"></i></div>reports</a>
+        <a onclick="navigatePage('settings.html')" class="nav-item"><div><i class="fa-solid fa-gear"></i></div>settings</a>
+    </nav>
+
+<script>
+    let currentLang = localStorage.getItem('app_lang') || 'EN';
+    let selectedDeleteId = null;
+
+    function applyLanguage() {
+        document.querySelectorAll('[data-en]').forEach(el => {
+            el.innerText = el.getAttribute(`data-${currentLang.toLowerCase()}`);
+        });
+        let searchInput = document.getElementById('searchInput');
+        if(searchInput) {
+            searchInput.placeholder = currentLang === 'EN' ? 'Search by category, note or month...' : 'በምድብ፣ ማስታወሻ ወይም ወር ፈልግ...';
+        }
+    }
+
+    async function navigatePage(url) {
+        try {
+            let response = await fetch(url);
+            let htmlText = await response.text();
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(htmlText, 'text/html');
+            
+            document.querySelector('main').innerHTML = doc.querySelector('main').innerHTML;
+            document.title = doc.title;
+            history.pushState({}, '', url);
+
+            if(url.includes('list.html')) {
+                renderList();
+            }
+            applyLanguage();
+        } catch (e) {
+            location.href = url;
+        }
+    }
+
+    function renderList() {
+        let transactions = JSON.parse(localStorage.getItem('my_finance_data')) || [];
+        const urlParams = new URLSearchParams(window.location.search);
+        const filterType = urlParams.get('filter');
+
+        const container = document.getElementById('transactionListContainer');
+        const searchInputEl = document.getElementById('searchInput');
+        if(!container) return;
+        
+        const searchTerm = searchInputEl ? searchInputEl.value.toLowerCase().trim() : '';
+        container.innerHTML = '';
+        
+        let filtered = transactions.filter(t => {
+            let matchType = true;
+            if(filterType) {
+                matchType = (t.type === filterType);
+            }
+            // በምድብ፣ በማስታወሻ ወይም በቀን (በወር ስም) መፈለግ እንዲችል ተደርጓል
+            let matchCategory = t.category.toLowerCase().includes(searchTerm);
+            let matchDesc = t.desc.toLowerCase().includes(searchTerm);
+            let matchDate = t.date.toLowerCase().includes(searchTerm);
+
+            let matchSearch = matchCategory || matchDesc || matchDate;
+            return matchType && matchSearch;
+        });
+
+        if(filtered.length === 0) {
+            let noDataText = currentLang === 'EN' ? 'No records found' : 'ምንም መረጃ አልተገኘም';
+            container.innerHTML = `<div class="text-center text-slate-400 py-8 text-xs font-medium">${noDataText}</div>`;
+            return;
+        }
+
+        filtered.forEach((t) => {
+            let colorClass = t.type === 'income' ? 'income-text' : (t.type === 'expense' ? 'expense-text' : 'savings-text');
+            let sign = t.type === 'income' ? '+' : (t.type === 'expense' ? '-' : '🏦');
+            let deleteText = currentLang === 'EN' ? 'Delete' : 'ሰርዝ';
+
+            const div = document.createElement('div');
+            div.className = 'list-item';
+            div.innerHTML = `
+                <div>
+                    <strong class="${colorClass} text-sm">${t.category}</strong><br>
+                    <small class="text-slate-400 text-[11px]">${t.date} - ${t.desc}</small>
+                </div>
+                <div class="text-right">
+                    <div class="${colorClass} font-extrabold text-sm">${sign} ${t.amount.toLocaleString()} ብር</div>
+                    <button onclick="confirmDelete(${t.id})" class="text-[10px] text-rose-500 hover:underline mt-1">${deleteText}</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function confirmDelete(id) {
+        selectedDeleteId = id;
+        let msg = currentLang === 'EN' ? 'Are you sure you want to delete this record?' : 'ይህንን መረጃ መሰረዝ ይፈልጋሉ?';
+        document.getElementById('modalMessage').innerText = msg;
+        document.getElementById('confirmModal').classList.add('show');
+    }
+
+    function closeModal() {
+        selectedDeleteId = null;
+        document.getElementById('confirmModal').classList.remove('show');
+    }
+
+    function executeDelete() {
+        if(selectedDeleteId !== null) {
+            let transactions = JSON.parse(localStorage.getItem('my_finance_data')) || [];
+            transactions = transactions.filter(t => t.id !== selectedDeleteId);
+            localStorage.setItem('my_finance_data', JSON.stringify(transactions));
+            closeModal();
+            renderList();
+        }
+    }
+
+    renderList();
+    applyLanguage();
+</script>
+</body>
+</html>
