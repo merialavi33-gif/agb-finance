@@ -6,6 +6,7 @@
     <title>Yab Financial - Home</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
     <style>
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; margin: 0; padding: 0; }
         @keyframes fadeIn {
@@ -64,10 +65,8 @@
 
     <header class="glass-header border-b border-slate-200 sticky top-0 z-50 px-4 py-3">
         <div class="max-w-2xl mx-auto flex justify-between items-center">
-            <!-- ግራ እና ቀኝ የነበሩት ሜኑዎች ጠፍተዋል -->
             <div></div>
             <h1 class="text-base font-extrabold text-slate-800 tracking-wide" data-en="Yab Financial" data-am="ያብ ፋይናንስ">Yab Financial</h1>
-            <!-- የቋንቋ መቀያየሪያ በቀኝ ጠግ -->
             <button class="lang-btn" id="langToggleBtn" onclick="toggleLanguage()">EN</button>
         </div>
     </header>
@@ -114,7 +113,6 @@
         </div>
     </main>
 
-    <!-- የታችኛው ፉተር በአይን ጥቅሻ (SPA) እንዲጫን ተደርጓል -->
     <nav class="navbar">
         <a onclick="navigatePage('home.html')" class="nav-item active"><div><i class="fa-solid fa-house"></i></div>home</a>
         <a onclick="navigatePage('add.html')" class="nav-item"><div><i class="fa-solid fa-file-arrow-up"></i></div>add</a>
@@ -125,7 +123,6 @@
     </nav>
 
 <script>
-    // ቋንቋ ማስተካከያ (Default: EN)
     let currentLang = localStorage.getItem('app_lang') || 'EN';
 
     function toggleLanguage() {
@@ -141,7 +138,6 @@
         });
     }
 
-    // በአይን ጥቅሻ (ያለ ሪፍሬሽ) ገጾችን የሚቀይር ፈጣን ፍተሻ (SPA loader)
     async function navigatePage(url) {
         try {
             let response = await fetch(url);
@@ -149,19 +145,17 @@
             let parser = new DOMParser();
             let doc = parser.parseFromString(htmlText, 'text/html');
             
-            // የዋናውን አካል (main እና ርዕስ) ይዘት ብቻ በመቀየር ፍጥንቱን በአይን ጥቅሻ ማድረግ
             document.querySelector('main').innerHTML = doc.querySelector('main').innerHTML;
             document.title = doc.title;
             history.pushState({}, '', url);
 
-            // አዳዲስ ገጾች ሲጫኑ ስክሪፕቶቻቸው እንዲሰሩ ዳግም ማስጀመር
             if(url.includes('home.html') || url === '') {
                 showToday();
                 loadHomeData();
             }
             applyLanguage();
         } catch (e) {
-            location.href = url; // ድንገት ችግር ካለ በቀጥታ ይጫናል
+            location.href = url;
         }
     }
 
