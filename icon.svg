@@ -4,13 +4,17 @@
       <stop offset="0%" stop-color="#db2777" />
       <stop offset="100%" stop-color="#881337" />
     </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
   </defs>
+  
   <!-- የጀርባ ሮዝ ቅርጽ (Rounded Square) -->
   <rect width="512" height="512" rx="110" fill="url(#pinkGrad)" />
   
   <!-- የውስጥ ጌጣጌጥ መስመር -->
-  <rect x="25" y="25" width="462" height="462" rx="90" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="8" />
+  <rect x="28" y="28" width="456" height="456" rx="90" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="8" />
 
-  <!-- AGB.F ጽሁፍ -->
-  <text x="50%" y="54%" font-family="system-ui, -apple-system, sans-serif" font-weight="900" font-size="125" fill="#ffffff" text-anchor="middle" dominant-baseline="middle" letter-spacing="4">AGB.F</text>
+  <!-- AGB.F ጽሁፍ ከጥላ ጋር -->
+  <text x="50%" y="54%" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="125" fill="#ffffff" text-anchor="middle" dominant-baseline="middle" letter-spacing="6" filter="url(#shadow)">AGB.F</text>
 </svg>
