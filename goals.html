@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Yab Financial - Savings Goals</title>
+    <title>AGB Financial - Savings Goals</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
@@ -26,7 +26,7 @@
     <header class="glass-header border-b border-slate-200 sticky top-0 z-50 px-4 py-3">
         <div class="max-w-2xl mx-auto flex justify-between items-center">
             <div></div>
-            <h1 class="text-base font-extrabold text-slate-800 tracking-wide" data-en="Yab Financial" data-am="Yab Financial">Yab Financial</h1>
+            <h1 class="text-base font-extrabold text-slate-800 tracking-wide" data-en="AGB Financial" data-am="AGB ፋይናንስ">AGB Financial</h1>
             <div></div>
         </div>
     </header>
@@ -34,10 +34,9 @@
     <main id="main-content" class="max-w-2xl mx-auto p-4 space-y-4">
         <div class="flex justify-between items-center mb-1">
             <h3 class="text-sm font-bold text-slate-700" data-en="🎯 Savings Goals" data-am="🎯 የቁጠባ ግቦች">🎯 Savings Goals</h3>
-            <a onclick="navigatePage('add.html?tab=savings')" class="text-emerald-600 font-bold text-lg cursor-pointer">+</a>
+            <a onclick="navigatePage('add.html')" class="text-emerald-600 font-bold text-lg cursor-pointer">+</a>
         </div>
 
-        <!-- ስልክ መግዣ -->
         <div class="progress-box">
             <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1">
                 <span data-en="📱 Phone (30,000 ETB)" data-am="📱 ስልክ መግዣ (30,000 ብር)">📱 ስልክ መግዣ (30,000 ብር)</span>
@@ -51,7 +50,6 @@
             </div>
         </div>
 
-        <!-- PC መግዣ -->
         <div class="progress-box">
             <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1">
                 <span data-en="💻 PC (80,000 ETB)" data-am="💻 PC መግዣ (80,000 ብር)">💻 PC መግዣ (80,000 ብር)</span>
@@ -65,7 +63,6 @@
             </div>
         </div>
 
-        <!-- ሶስተኛ ተጨማሪ ግብ -->
         <div class="progress-box">
             <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1">
                 <span data-en="💼 Additional (50,000 ETB)" data-am="💼 ተጨማሪ (50,000 ብር)">💼 ተጨማሪ (50,000 ብር)</span>
@@ -122,7 +119,6 @@
         let transactions = JSON.parse(localStorage.getItem('my_finance_data')) || [];
         let suffix = currentLang === 'EN' ? ' ETB' : ' ብር';
 
-        // 1. ስልክ መግዣ (ዒላማ: 30,000)
         let phoneTotal = transactions.filter(t => t.category.trim() === 'ስልክ መግዣ').reduce((acc, t) => acc + t.amount, 0);
         let phonePercent = Math.min(Math.round((phoneTotal / 30000) * 100), 100);
         let phoneElText = document.getElementById('phone-goal-text');
@@ -132,7 +128,6 @@
         if(phoneElPercent) phoneElPercent.innerText = phonePercent + '%';
         if(phoneElBar) phoneElBar.style.width = phonePercent + '%';
 
-        // 2. PC መግዣ (ዒላማ: 80,000)
         let pcTotal = transactions.filter(t => t.category.trim() === 'PC መግዣ').reduce((acc, t) => acc + t.amount, 0);
         let pcPercent = Math.min(Math.round((pcTotal / 80000) * 100), 100);
         let pcElText = document.getElementById('pc-goal-text');
@@ -142,7 +137,6 @@
         if(pcElPercent) pcElPercent.innerText = pcPercent + '%';
         if(pcElBar) pcElBar.style.width = pcPercent + '%';
 
-        // 3. ተጨማሪ (ዒላማ: 50,000)
         let extraTotal = transactions.filter(t => t.category.trim() === 'ተጨማሪ').reduce((acc, t) => acc + t.amount, 0);
         let extraPercent = Math.min(Math.round((extraTotal / 50000) * 100), 100);
         let extraElText = document.getElementById('extra-goal-text');
