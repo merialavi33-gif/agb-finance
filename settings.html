@@ -3,28 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AGB Financial - Settings</title>
+    <title>Yab Financial - Settings</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
     <style>
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; margin: 0; padding: 0; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        body { font-family: system-ui, -apple-system, sans-serif; background: #f1f5f9 !important; color: #1e293b !important; min-height: 100vh; padding-bottom: 75px; animation: fadeIn 0.2s ease-in-out; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f1f5f9 !important; color: #1e293b !important; min-height: 100vh; padding-bottom: 30px; animation: fadeIn 0.2s ease-in-out; }
         .glass-header { background: rgba(241, 245, 249, 0.9); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-        .navbar { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid rgba(226, 232, 240, 0.8); z-index: 1000; max-width: 42rem; margin: 0 auto; }
-        .nav-item { text-align: center; color: #64748b; font-size: 11px; font-weight: 600; cursor: pointer; background: none; border: none; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 3px; }
-        .nav-item.active { color: #10b981; }
-        .nav-item div { font-size: 18px; }
+
+        /* Dropdown Menu Styles */
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 16px;
+            background: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            width: 200px;
+            z-index: 1000;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            overflow: hidden;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: #334155;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        .menu-item:hover {
+            background: #f8fafc;
+        }
+        .menu-item i {
+            font-size: 16px;
+            color: #64748b;
+            width: 20px;
+            text-align: center;
+        }
+        .menu-item.active {
+            color: #10b981;
+            font-weight: 600;
+        }
+        .menu-item.active i {
+            color: #10b981;
+        }
+
+        .lang-btn { background: #e2e8f0; color: #1e293b; border: none; padding: 5px 12px; border-radius: 0.5rem; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .menu-btn { background: #e2e8f0; color: #1e293b; border: none; width: 32px; height: 32px; border-radius: 0.5rem; font-weight: bold; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
-<body class="min-h-screen pb-20">
+<body class="min-h-screen">
 
     <header class="glass-header border-b border-slate-200 sticky top-0 z-50 px-4 py-3">
-        <div class="max-w-2xl mx-auto flex justify-between items-center">
-            <div></div>
-            <h1 class="text-base font-extrabold text-slate-800 tracking-wide" data-en="AGB Financial" data-am="AGB ፋይናንስ">AGB Financial</h1>
-            <div></div>
+        <div class="max-w-2xl mx-auto flex justify-between items-center relative">
+            <button class="lang-btn" id="langToggleBtn" onclick="toggleLanguage()">EN</button>
+            <h1 class="text-base font-extrabold text-slate-800 tracking-wide" data-en="Yab Financial" data-am="Yab Financial">Yab Financial</h1>
+            
+            <button class="menu-btn" id="menuBtn" onclick="toggleMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <!-- Dropdown Menu with standard href links -->
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a href="home.html" class="menu-item"><i class="fa-solid fa-house"></i> <span data-en="Home" data-am="መነሻ">Home</span></a>
+                <a href="add.html" class="menu-item"><i class="fa-solid fa-file-arrow-up"></i> <span data-en="Add" data-am="ጨምር">Add</span></a>
+                <a href="list.html" class="menu-item"><i class="fa-solid fa-file-lines"></i> <span data-en="List" data-am="ዝርዝር">List</span></a>
+                <a href="goals.html" class="menu-item"><i class="fa-solid fa-briefcase"></i> <span data-en="Goals" data-am="ዕቅዶች">Goals</span></a>
+                <a href="reports.html" class="menu-item"><i class="fa-solid fa-chart-pie"></i> <span data-en="Reports" data-am="ሪፖርቶች">Reports</span></a>
+                <a href="settings.html" class="menu-item active"><i class="fa-solid fa-gear"></i> <span data-en="Settings" data-am="ማስተካከያ">Settings</span></a>
+            </div>
         </div>
     </header>
 
@@ -36,39 +98,43 @@
         <p class="text-xs text-slate-400" data-en="Settings and configurations will be available here soon." data-am="ቅንብሮች እና ተጨማሪ አማራጮች በቅርቡ ይጨመራሉ።">Settings and configurations will be available here soon.</p>
     </main>
 
-    <nav class="navbar">
-        <a onclick="navigatePage('home.html')" class="nav-item"><div><i class="fa-solid fa-house"></i></div>home</a>
-        <a onclick="navigatePage('add.html')" class="nav-item"><div><i class="fa-solid fa-file-arrow-up"></i></div>add</a>
-        <a onclick="navigatePage('list.html')" class="nav-item"><div><i class="fa-solid fa-file-lines"></i></div>list</a>
-        <a onclick="navigatePage('goals.html')" class="nav-item"><div><i class="fa-solid fa-briefcase"></i></div>goals</a>
-        <a onclick="navigatePage('reports.html')" class="nav-item"><div><i class="fa-solid fa-chart-pie"></i></div>reports</a>
-        <a onclick="navigatePage('settings.html')" class="nav-item active"><div><i class="fa-solid fa-gear"></i></div>settings</a>
-    </nav>
-
 <script>
-    let currentLang = localStorage.getItem('app_lang') || 'EN';
-
-    function applyLanguage() {
-        document.querySelectorAll('[data-en]').forEach(el => {
-            el.innerText = el.getAttribute(`data-${currentLang.toLowerCase()}`);
+    // Service Worker Registration
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => console.log('Service Worker registered! Scope:', reg.scope))
+                .catch(err => console.log('Service Worker registration failed:', err));
         });
     }
 
-    async function navigatePage(url) {
-        try {
-            let response = await fetch(url);
-            let htmlText = await response.text();
-            let parser = new DOMParser();
-            let doc = parser.parseFromString(htmlText, 'text/html');
-            
-            document.querySelector('main').innerHTML = doc.querySelector('main').innerHTML;
-            document.title = doc.title;
-            history.pushState({}, '', url);
+    let currentLang = localStorage.getItem('app_lang') || 'EN';
 
-            applyLanguage();
-        } catch (e) {
-            location.href = url;
+    function toggleLanguage() {
+        currentLang = currentLang === 'EN' ? 'AM' : 'EN';
+        localStorage.setItem('app_lang', currentLang);
+        applyLanguage();
+    }
+
+    function toggleMenu() {
+        const menu = document.getElementById('dropdownMenu');
+        menu.classList.toggle('show');
+    }
+
+    // ከሜኑ ውጭ ሲነካ ሜኑ እንዲዘጋ
+    window.addEventListener('click', function(e) {
+        const menu = document.getElementById('dropdownMenu');
+        const menuBtn = document.getElementById('menuBtn');
+        if (!menu.contains(e.target) && !menuBtn.contains(e.target)) {
+            menu.classList.remove('show');
         }
+    });
+
+    function applyLanguage() {
+        document.getElementById('langToggleBtn').innerText = currentLang;
+        document.querySelectorAll('[data-en]').forEach(el => {
+            el.innerText = el.getAttribute(`data-${currentLang.toLowerCase()}`);
+        });
     }
 
     applyLanguage();
