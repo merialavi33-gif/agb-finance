@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AGB Financial - Welcome</title>
+    <title>Yab Financial - Welcome</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="manifest" href="manifest.json">
@@ -63,23 +63,43 @@
             display: block;
             text-align: center;
         }
-        .btn-enter:active { transform: scale(0.97); }
+        .btn-enter:active {
+            transform: scale(0.97);
+        }
     </style>
 </head>
 <body>
+
     <div></div>
+
     <div class="welcome-container">
+        <!-- የኪስ ቦርሳ እና የዶላር ምልክት አዶ -->
         <div class="wallet-box">
             <i class="fa-solid fa-wallet text-amber-400 text-5xl"></i>
         </div>
-        <h1 class="text-3xl font-extrabold tracking-wide mb-1" data-en="AGB Financial" data-am="AGB ፋይናንስ">AGB ፋይናንስ</h1>
+
+        <h1 class="text-3xl font-extrabold tracking-wide mb-1" data-en="Yab Financial" data-am="Yab Financial">Yab Financial</h1>
         <p class="text-sm text-pink-200 mb-8 font-medium" data-en="My Finance" data-am="ማይ ፋይናንስ">My Finance</p>
+
+        <!-- "ግባ" የሚለው ብቸኛ በተን -->
         <div class="w-full">
             <a href="home.html" class="btn-enter" data-en="Enter" data-am="ግባ">ግባ</a>
         </div>
     </div>
+
     <div class="text-xs text-pink-200 opacity-80 font-medium">
-        &copy; 2026 AGB Financial. All rights reserved.
+        &copy; 2026 Yab Financial. All rights reserved.
     </div>
+
+    <!-- Service Worker Registration Script -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('Service Worker registered! Scope:', reg.scope))
+            .catch(err => console.log('Service Worker registration failed:', err));
+        });
+      }
+    </script>
 </body>
 </html>
