@@ -1,15 +1,17 @@
 {
-  "name": "AGB Financial",
-  "short_name": "AGB Finance",
-  "start_url": "index.html",
+  "name": "Yab Financial",
+  "short_name": "YabFin",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#881337",
-  "theme_color": "#be123c",
+  "background_color": "#f1f5f9",
+  "theme_color": "#10b981",
   "icons": [
     {
-      "src": "icon.svg",
+      "src": "https://cdn-icons-png.flaticon.com/512/2910/2910791.png",
       "sizes": "512x512",
-      "type": "image/svg+xml"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
