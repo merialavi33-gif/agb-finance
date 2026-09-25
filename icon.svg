@@ -1,20 +1,26 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="pinkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#db2777" />
-      <stop offset="100%" stop-color="#881337" />
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#065f46" />
+      <stop offset="100%" stop-color="#047857" />
     </linearGradient>
-    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#000000" flood-opacity="0.35"/>
-    </filter>
+    <linearGradient id="walletGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
   </defs>
   
-  <!-- የጀርባ ሮዝ ቅርጽ (Rounded Square) -->
-  <rect width="512" height="512" rx="110" fill="url(#pinkGrad)" />
+  <!-- የጀርባ ቅርጽ (Background) -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
   
-  <!-- የውስጥ ጌጣጌጥ መስመር -->
-  <rect x="28" y="28" width="456" height="456" rx="90" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="8" />
-
-  <!-- AGB.F ጽሁፍ ከጥላ ጋር -->
-  <text x="50%" y="54%" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" font-weight="900" font-size="125" fill="#ffffff" text-anchor="middle" dominant-baseline="middle" letter-spacing="6" filter="url(#shadow)">AGB.F</text>
+  <!-- የኪስ ቦርሳ (Wallet Icon Graphics) -->
+  <g transform="translate(64, 96)">
+    <!-- ዋናው የቦርሳ አካል -->
+    <rect x="20" y="80" width="344" height="230" rx="32" fill="url(#walletGrad)" />
+    <!-- የቦርሳው ከፍል / ከላይኛው ከለር -->
+    <path d="M 20 120 L 364 120 C 364 98 346 80 324 80 L 60 80 C 38 80 20 98 20 120 Z" fill="#047857" opacity="0.4" />
+    <!-- የኪስ መክፈቻ / መቆለፊያ ክፍል (Gold/Amber Accent) -->
+    <path d="M 240 170 L 364 170 C 375 170 384 179 384 190 L 384 250 C 384 261 375 270 364 270 L 240 270 C 229 270 220 261 220 250 L 220 190 C 220 179 229 170 240 170 Z" fill="#fbbf24" />
+    <circle cx="302" cy="220" r="14" fill="#065f46" />
+  </g>
 </svg>
