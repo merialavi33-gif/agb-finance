@@ -40,6 +40,42 @@
         .ethiopian-date { font-size: 24px; font-weight: bold; color: #34d399; margin: 6px 0; }
         .gregorian-date { color: #94a3b8; font-size: 14px; }
 
+        /* Month Selector Bar Styles */
+        .month-selector-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            padding: 8px 16px;
+            border-radius: 0.75rem;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .month-nav-btn {
+            background: #e2e8f0;
+            color: #1e293b;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        .month-nav-btn:hover {
+            background: #cbd5e1;
+        }
+        .current-selected-month {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1e293b;
+            text-align: center;
+        }
+
         .chart-box { 
             background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%) !important;
             border: 1px solid rgba(148, 163, 184, 0.3);
@@ -130,6 +166,13 @@
             <div class="today-label" data-en="Today" data-am="ዛሬ">Today</div>
             <div class="ethiopian-date" id="todayEthiopian">...</div>
             <div class="gregorian-date" id="todayGregorian">...</div>
+        </div>
+
+        <!-- የወራት መቀያየሪያ (Month Selector Bar) -->
+        <div class="month-selector-bar">
+            <button class="month-nav-btn" onclick="changeMonth(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <div class="current-selected-month" id="selectedMonthLabel">...</div>
+            <button class="month-nav-btn" onclick="changeMonth(1)"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
 
         <div class="grid grid-cols-2 gap-3">
@@ -224,6 +267,7 @@
         return { year, month, day, monthName: ethiopianMonths[month] || "መስከረም" };
     }
 
+    // የአሁኑን ቀን ማሳያ
     function showToday() {
         const now = new Date();
         const ethiopian = gregorianToEthiopian(now);
@@ -233,15 +277,60 @@
         if(gregEl) gregEl.textContent = now.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
     }
 
+    // የወራት መቀያየሪያ ሎጂክ (State variables)
+    let todayEth = gregorianToEthiopian(new Date());
+    let selectedYear = todayEth.year;
+    let selectedMonth = todayEth.month; // ከ 1 እስከ 13
+
+    function changeMonth(direction) {
+        selectedMonth += direction;
+        if (selectedMonth > 13) {
+            selectedMonth = 1;
+            selectedYear += 1;
+        } else if (selectedMonth < 1) {
+            selectedMonth = 13;
+            selectedYear -= 1;
+        }
+        loadHomeData();
+    }
+
     function loadHomeData() {
+        let monthNameText = ethiopianMonths[selectedMonth] || "መስከረም";
+        let monthLabelEl = document.getElementById('selectedMonthLabel');
+        if (monthLabelEl) {
+            monthLabelEl.innerText = `${monthNameText} ${selectedYear}`;
+        }
+
+        // ከ list.html እና ከሌሎች ገጾች የሚጠቀመውን ሎካል ስቶሬጅ 'my_finance_data' ሙሉ በሙሉ ማንበብ
         let transactions = JSON.parse(localStorage.getItem('my_finance_data')) || [];
         let income = 0, expense = 0, savings = 0;
 
         transactions.forEach(t => {
-            if(t.type === 'income') income += t.amount;
-            if(t.type === 'expense') expense += t.amount;
-            if(t.type === 'savings') savings += t.amount;
+            // ከ list.html ጋር በተመሳሳይ መልኩ የዕለት ቀኑን በተለያዩ መንገዶች (date, createdAt, timestamp ወዘተ) በመለየት ማንበብ
+            let rawDate = t.date || t.createdAt || t.timestamp || t.time;
+            let tDate = rawDate ? new Date(rawDate) : new Date();
+            
+            // የኢትዮጵያን ቀን ከትራንዛክሽኑ ቀን ማውጣት
+            let tEth = gregorianToEthiopian(isopharmaceuticalsDateValid(tDate) ? tDate : new Date());
+            
+            // ከ list.html ጋር ሙሉ ለሙሉ ተስማሚ እንዲሆን ቀኑ በትክክል ካልተገኘ በ object ውስጥ የተለየ თარიღ ካለ ማረጋገጫ
+            if (t.ethiopianMonth && t.ethiopianYear) {
+                tEth.month = Number(t.ethiopianMonth);
+                tEth.year = Number(t.ethiopianYear);
+            }
+
+            // ከተመረጠው ወር እና ዓመት ጋር የሚዛመድ ከሆነ ብቻ መረጃውን ማካተት
+            if (tEth.month === selectedMonth && tEth.year === selectedYear) {
+                let amount = Number(t.amount) || 0;
+                if (t.type === 'income') income += amount;
+                if (t.type === 'expense') expense += amount;
+                if (t.type === 'savings') savings += amount;
+            }
         });
+
+        function isopharmaceuticalsDateValid(d) {
+            return d instanceof Date && !isNaN(d);
+        }
 
         let balance = income - (expense + savings);
 
